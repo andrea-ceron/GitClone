@@ -201,14 +201,20 @@ namespace GitRepository.Repository
 
 		public async  Task<ICollection<Push>> GetAllPushByBranchId(int id, CancellationToken ct = default)
 		{
-			return await dbContext.Pushes
-							.Where(p => p.)
+			return await dbContext.BranchAssociations
+							.Where(ba => ba.BranchId == id)
+							.Select(ba => ba.Push)
+							.Distinct()
+							.ToListAsync(ct);
 
 		}
 
-		public Task<ICollection<Snapshot>> GetAllSnapshotFromFileId(int fileId, CancellationToken ct = default)
+		public async Task<ICollection<Snapshot>> GetAllSnapshotFromFileId(int fileId, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			return await dbContext.Snapshots.
+							Where(s => s.FileId == fileId)
+							.ToListAsync(ct);
+							
 		}
 
 		public async  Task<Branch>? GetBranchById(int id, CancellationToken ct = default)
@@ -223,14 +229,22 @@ namespace GitRepository.Repository
 			throw new NotImplementedException();
 		}
 
-		public Task<Push> GetPreviousPush(int id, CancellationToken ct = default)
+		public async  Task<Push?> GetPreviousPush(int id, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			return await dbContext.Pushes
+				.Include(p=>p.PreviousPush)
+				.Where(p => p.Id == id)
+				.Select(p => p.PreviousPush)
+				.SingleOrDefaultAsync(ct);
 		}
 
-		public Task<Snapshot> GetPreviousSnapshot(int id, CancellationToken ct = default)
+		public async Task<Snapshot?> GetPreviousSnapshot(int id, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			return await dbContext.Snapshots
+				.Include(p => p.PreviousSnapshot)
+				.Where(p => p.Id == id)
+				.Select(p => p.PreviousSnapshot)
+				.SingleOrDefaultAsync(ct);
 		}
 
 		public async Task<Project> GetProjectById(int id, CancellationToken ct = default)
@@ -247,9 +261,11 @@ namespace GitRepository.Repository
 				.SingleOrDefaultAsync(ct);
 		}
 
-		public Task<ICollection<BranchAssociation>> GetRepoFileAndSnapshotFromPushId(int id, CancellationToken ct = default)
+		public async Task<ICollection<BranchAssociation?>?> GetRepoFileAndSnapshotFromPushId(int id, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			return await dbContext.BranchAssociations
+								.Where(ba => ba.PushId == id)
+								.ToListAsync(ct);
 		}
 
 		public async Task<RepoFile>? GetRepoFileById(int id, CancellationToken ct = default)
