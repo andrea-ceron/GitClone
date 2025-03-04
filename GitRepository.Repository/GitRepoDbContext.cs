@@ -8,7 +8,7 @@ using GitRepository.Repository.Model;
 
 namespace GitRepository.Repository
 {
-	class GitRepoDbContext : DbContext
+	public class GitRepoDbContext : DbContext
 	{
 		protected override void OnModelCreating(ModelBuilder mb)
 		{
