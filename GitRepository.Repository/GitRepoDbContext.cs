@@ -25,14 +25,14 @@ namespace GitRepository.Repository
 				.OnDelete(DeleteBehavior.Cascade);
 
 			mb.Entity<Branch>().HasKey(b => b.Id);
-			mb.Entity<Branch>().HasMany(b => b.PushList)
+			mb.Entity<Branch>().HasMany(b => b.PushHistory)
 				.WithOne(p => p.Branch)
 				.HasForeignKey(p => p.BranchId)
 				.OnDelete(DeleteBehavior.Cascade);
-			mb.Entity<Branch>().HasOne(b => b.LastPush)
-				.WithOne()
-				.HasForeignKey<Branch> (p => p.LastPushId)
-				.OnDelete(DeleteBehavior.Cascade);
+			//mb.Entity<Branch>().HasOne(b => b.LastPush)
+			//	.WithOne()
+			//	.HasForeignKey<Branch> (p => p.LastPushId)
+			//	.OnDelete(DeleteBehavior.Cascade);
 
 			mb.Entity<Push>().HasKey(p => p.Id);
 			mb.Entity<Push>().HasOne(p => p.PreviousPush)
@@ -67,10 +67,10 @@ namespace GitRepository.Repository
 		public DbSet<User> Users { get; set; }
 		public DbSet<Project> Projects { get; set; }
 		public DbSet<Branch> Branches { get; set; }
-		public DbSet<Push> Push { get; set; }
+		public DbSet<Push> Pushes { get; set; }
 		public DbSet<RepoFile> Files { get; set; }
 		public DbSet<Snapshot> Snapshots { get; set; }
-		public DbSet<BranchAssociation> BranchAssociation { get; set; }
+		public DbSet<BranchAssociation> BranchAssociations { get; set; }
 
 
 	}

@@ -8,8 +8,6 @@ namespace GitRepository.Repository.Model
 		public string Title { get; set; }
 		public string Message { get; set; }
 		public DateTime Upload {  get; set; }
-		public Branch Branch { get; set; }
-		public int BranchId { get; set; }
 		public Push? PreviousPush { get; set; }
 		public int? PreviousPushId { get; set; }
 		public ICollection<BranchAssociation> AssociationFileSnapshot { get; set; }

@@ -23,14 +23,14 @@ namespace GitRepository.Repository.Abstraction {
 		Task<ICollection<Project>> GetAllProjectByUserId(int id, CancellationToken ct = default);
 
 		// Branches
-		Task<Branch> CreateBranch(int projectId, string name, ITransactionUnit? transaction = null, CancellationToken ct = default);
+		Task<Branch> CreateBranch(int projectId, string name, CancellationToken ct = default);
 		Task DeleteBranch(int branchId, CancellationToken ct = default);
 		Task<Branch> UpdateBranch(Branch branch, CancellationToken ct = default);
 		Task<Branch> GetBranchById(int id, CancellationToken ct = default);
 		Task<ICollection<Branch>> GetAllBranchByProjectId(int id, CancellationToken ct = default);
 
 		//Push
-		Task<Push> CreatePush(int branchId, string title, string message, ITransactionUnit? transaction = null, CancellationToken ct = default);
+		Task<Push> CreatePush( string title, string message, CancellationToken ct = default);
 		Task DeletePush(int pushId, CancellationToken ct = default);
 		Task<Push> UpdatePush(Push push, CancellationToken ct = default);
 		Task<Push> GetPushById(int id, CancellationToken ct = default);
@@ -45,7 +45,7 @@ namespace GitRepository.Repository.Abstraction {
 		Task<RepoFile> GetRepoFileById(int id, CancellationToken ct = default);
 
 		//Snapshot
-		Task<Snapshot> CreateSnapshot(string name, string fileId, string path, CancellationToken ct = default);
+		Task<Snapshot> CreateSnapshot(string name, int fileId, string path, CancellationToken ct = default);
 		Task DeleteSnapshot(int id, CancellationToken ct = default);
 		Task<Snapshot> UpdateSnapshot(Snapshot snapshot, CancellationToken ct = default);
 		Task<Snapshot> GetSnapshotById(int id, CancellationToken ct = default);
