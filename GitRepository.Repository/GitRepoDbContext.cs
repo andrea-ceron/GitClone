@@ -13,16 +13,18 @@ namespace GitRepository.Repository
 		protected override void OnModelCreating(ModelBuilder mb)
 		{
 			mb.Entity<User>().HasKey(u => u.Id);
-			mb.Entity<User>().HasMany(u => u.Projects)
-				.WithOne(p => p.User)
-				.HasForeignKey(p => p.UserId)
-				.OnDelete(DeleteBehavior.Cascade);
+			mb.Entity<User>().HasMany(p => p.Projects)
+				.WithOne(b => b.Programmer)
+				.HasForeignKey(b => b.ProgrammerId);
 
 			mb.Entity<Project>().HasKey(p => p.Id);
 			mb.Entity<Project>().HasMany(p => p.BranchList)
 				.WithOne(b => b.Project)
 				.HasForeignKey(b => b.ProjectId)
 				.OnDelete(DeleteBehavior.Cascade);
+			mb.Entity<Project>().HasMany(p => p.AccessFromUsers)
+				.WithOne(b => b.Project)
+				.HasForeignKey(b => b.ProjectId);
 
 			mb.Entity<Branch>().HasKey(b => b.Id);
 			mb.Entity<Branch>().HasMany(b => b.PushHistory)
@@ -61,6 +63,9 @@ namespace GitRepository.Repository
 				.HasForeignKey(s=>s.PreviousSnapshotId);
 
 			mb.Entity<BranchAssociation>().HasKey(b => b.Id);
+
+			mb.Entity<AccessToProjects>().HasKey(b => b.Id);
+
 
 		}
 

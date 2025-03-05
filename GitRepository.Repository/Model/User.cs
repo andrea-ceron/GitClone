@@ -4,7 +4,7 @@ namespace GitRepository.Repository.Model
 	{
 		public int Id { get; set; }
 		public string UserName { get; set; }
-		public ICollection<Project>? Projects { get; set; }
+		public List<AccessToProjects>? Projects { get; set; }
 
 	}
 

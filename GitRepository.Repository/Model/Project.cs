@@ -6,9 +6,10 @@ namespace GitRepository.Repository.Model
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public int UserId { get; set; }
-		public User User { get; set; }
 		public List<Branch> BranchList { get; set;}
+		public bool Scope { get; set; }
+		public List<AccessToProjects>? AccessFromUsers { get; set; }
+
 	}
 
 
