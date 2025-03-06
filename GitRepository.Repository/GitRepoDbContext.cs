@@ -71,6 +71,8 @@ namespace GitRepository.Repository
 
 		public DbSet<User> Users { get; set; }
 		public DbSet<Project> Projects { get; set; }
+		public DbSet<AccessToProjects> AccessesToProjects { get; set; }
+
 		public DbSet<Branch> Branches { get; set; }
 		public DbSet<Push> Pushes { get; set; }
 		public DbSet<RepoFile> Files { get; set; }

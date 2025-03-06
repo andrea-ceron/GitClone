@@ -10,20 +10,27 @@ namespace GitRepository.Repository
 {
 	public class Repository(GitRepoDbContext dbContext) : IRepository
 	{
-
-
-		public async Task<Branch> CreateBranch(int projectId, string name, CancellationToken ct = default)
+		public TransactionUnit TransactionFactory()
 		{
-			//Verifico che transaction sia nullo
-			//bool TransactionBool = transaction == null;
-			//if (TransactionBool)
-			//{
-			//	// se è nullo creo una nuova transaction
-			//	transaction = new TransactionUnit(dbContext);
-			//	await transaction.BeginTransactionAsync();
-			//}
-			//try
-			//{
+			TransactionUnit transaction = new(dbContext);
+			return transaction;
+		}
+		public async Task AppendUserToProject(List<int> userId, int projectId, int ownerId, CancellationToken ct = default)
+		{
+			var newAccesses = userId.Select(userId => new AccessToProjects
+			{
+				ProgrammerId = userId,
+				ProjectId = projectId,
+				Owner = ownerId == userId
+			}).ToList();
+			 
+
+			await dbContext.AccessesToProjects.AddRangeAsync(newAccesses, ct);
+		}
+
+		public async Task<Branch> CreateBranch(int projectId, string name = "master", CancellationToken ct = default)
+		{
+
 				// Creazione della Branch
 				Branch NewBranch = new()
 				{
@@ -32,71 +39,31 @@ namespace GitRepository.Repository
 
 				};
 				await dbContext.Branches.AddAsync(NewBranch, ct);
-				await dbContext.SaveChangesAsync(ct);
-				//await CreatePush(NewBranch.Id, "","", transaction, ct);
-
-				//if (TransactionBool)
-				//{
-				//	// se ho creato la transazione allora la chiudo 
-				//	await transaction.CommitAsync();
-				//}
-
 				return NewBranch;
-			//}
-			//catch
-			//{
-			//	if (TransactionBool)
-			//	{
-			//		// se ho creato la transazione all interno di Branch se si verifica un errore eseguo la rollback
-			//		await transaction.RollbackAsync();
-			//	}
-			//	throw;
-			//}
-			//return null;
+
 		}
 
-		public async Task<Project> CreateProject(int owner, string name, CancellationToken ct = default)
+		public async Task<Project> CreateProject(string name, bool isPrivate, CancellationToken ct = default)
 		{
-			// Creo una transazione per gestire diverse operazioni verso il DB attraverso la classe TransactionUnit
-			//using TransactionUnit transaction = new (dbContext);
-			// Faccio aprtire la transazione
-			//await transaction.BeginTransactionAsync();
-			//try
-			//{
-				//Creo il modello
-				Project NewProject = new()
-				{
-					UserId = owner,
-					Name = name
+			Project NewProject = new()
+			{
+				Name = name,
+				Scope = isPrivate
+			};
+			await dbContext.Projects.AddAsync(NewProject, ct);
+			return NewProject;
 
-				};
-				// eseguo salvo la query
-				await dbContext.Projects.AddAsync(NewProject, ct);
-				await dbContext.SaveChangesAsync(ct);
-
-				// creo il branch Main
-				//await CreateBranch(NewProject.Id, "", transaction, ct);
-				//await transaction.CommitAsync();
-				return NewProject;
-
-			//}
-			//catch
-			//{
-			//	await transaction.RollbackAsync();
-			//	throw;
-			//}
-			////Creacione branch main
-			//return null;
 		}
 
-		public async Task<Push> CreatePush( string title = "Nuova Branch", string message = "Creazione di una nuova Branch", CancellationToken ct = default)
+		public async Task<Push> CreatePush(int? previousPushId, string title = "Nuova Branch", string message = "Creazione di una nuova Branch", CancellationToken ct = default)
 		{
 			// Creazione push di inizializzazione senza file;
 			Push NewPush = new()
 			{
 				Title = title,
 				Message = message,
-				Upload = new DateTime()
+				Upload = new DateTime(),
+				PreviousPushId = previousPushId
 			};
 			await dbContext.Pushes.AddAsync(NewPush, ct);
 			return NewPush;
@@ -192,12 +159,12 @@ namespace GitRepository.Repository
 			throw new NotImplementedException();
 		}
 
-		public async Task<ICollection<Project>>? GetAllProjectByUserId(int id, CancellationToken ct = default)
-		{
-			return await dbContext.Projects
-				.Where(p => p.UserId == id)
-				.ToListAsync();
-		}
+		//public async Task<ICollection<Project>>? GetAllProjectByUserId(int id, CancellationToken ct = default)
+		//{
+		//	return await dbContext.Projects
+		//		.Where(p => p.UserId == id)
+		//		.ToListAsync();
+		//}
 
 		public async  Task<ICollection<Push>> GetAllPushByBranchId(int id, CancellationToken ct = default)
 		{
@@ -316,6 +283,23 @@ namespace GitRepository.Repository
 		}
 
 		public Task<Snapshot> UpdateSnapshot(Snapshot snapshot, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ICollection<Project>> GetAllProjectByUserId(int id, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<RepoFile> GetRepoFileByFilePath(string? path, int projectId, int branchId, CancellationToken ct = default)
+		{
+			return await dbContext.Files
+							.Select(f => f.id)
+							.Where(f => f.)
+		}
+
+		public Task<BranchAssociation> CreateRepoChange(int id, CancellationToken ct = default)
 		{
 			throw new NotImplementedException();
 		}

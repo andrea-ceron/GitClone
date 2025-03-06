@@ -6,7 +6,7 @@ namespace GitRepository.Repository.Model
 		public string Name { get; set; }
 		public int ProjectId { get; set; }
 		public Project Project { get; set; }
-		public ICollection<BranchAssociation>? PushHistory { get; set;}
+		public List<BranchAssociation>? PushHistory { get; set;}
 		
 	}
 
